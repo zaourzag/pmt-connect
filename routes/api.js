@@ -4,18 +4,13 @@ const shift = require('../lib/shifts.cjs');
 
 const request = require("@aero/http");
 // const { reqauth} = require('../lib/util');
-const {getDate: week} = require('../lib/util');
+const { getDate: week } = require('../lib/util');
 const AUTH_URL = process.env.BASE_URL + "/pmtLoginSso";
 let authDetails = {
     context_token: "",
     user_token: ""
 };
-// test2()
-let testing = week("2025-02-10")
-console.log(testing)
 
-// console.log(employeeMap);
-// console.log(employees)
 const { BASE_URL, PMTUSERNAME, PASSWORD, ACCOUNTID } = process.env;
 // console.log(process.env.PMTUSERNAME)
 // console.log(process.env.PASSWORD)
@@ -72,18 +67,18 @@ router.get('/', async function (req, res, next) {
 
     // console.log(headers)
     //https://ahwaalwijk.personeelstool.nl/api/v2/shifts?date=2025-02-03&ignore_lent_out=true&account_id[neq]=285127&department_id=81,82,81,82
-    // const hours = await request(process.env.BASE_URL + "/api/v2/payrollDetails/totals", { authDetails})
-    const hours = await request(process.env.BASE_URL + "/api/v2/shifts?date=2025-01-29&ignore_lent_out=true&account_id[neq]=285127&department_id=404,82,404,82", { authDetails })
+    const hours = await request(process.env.BASE_URL + "/api/v2/payrollDetails/totals", { authDetails })
+        // const hours = await request(process.env.BASE_URL + "/api/v2/shifts?date=2025-01-29&ignore_lent_out=true&account_id[neq]=285127&department_id=404,82,404,82", { authDetails })
 
-        // .query("date[gte]", dateFrom)
-        // .query("date[lte]", dateTo)
-        // .query("a", ACCOUNTID)
+        .query("date[gte]", dateFrom)
+        .query("date[lte]", dateTo)
+        .query("account_id", ACCOUNTID)
         .header(authDetails)
         .json()
-    // .then((res) => {
-    //     console.log(JSON.stringify(res.result).period_totals);
-    //     return res.result[0].period_totals;
-    // });
+        .then((res) => {
+            console.log(JSON.stringify(res.result).period_totals);
+            return res.result[0].period_totals;
+        });
 
 
     // console.log(hours)
@@ -92,7 +87,7 @@ router.get('/', async function (req, res, next) {
 
 router.get('/shifts', async (req, res) => {
     let date = (req.query.date ?? "2025-02-10");
-let shifts = await shift.shifts(date)
+    let shifts = await shift.shifts(date)
 
     let html = `
     <!DOCTYPE html>
